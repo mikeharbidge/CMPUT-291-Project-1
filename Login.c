@@ -3,6 +3,7 @@
 //has two modes, either log in or sign up, which user decides
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sqlite3.h>
 #include <string.h>
 #include "Login.h"
@@ -10,10 +11,14 @@
 int main()
 {
     //testing for login
+    //NEEDS TO ERROR CHECK DB INIT
+    sqlite3 *db;
+    sqlite3_open("test.db", &db);
     int in = 0; //if login succeeded
     in = loginScreen();
     if (in)
         printf("***LOGIN SUCCEEDED***\n");
+    sqlite3_close(db);
     return 0;
 }
 
@@ -27,7 +32,6 @@ int loginScreen()
     int signInResult = 0; //result of smaller sign-in functions
 
     printf("Welcome to CMPUT 291 Mini-Project 1. Login screen started.\n");
-
 
     while (continueTop) //top level loop
     {
@@ -65,15 +69,22 @@ int signIn()
     //Handles signing in with an existing username and password
     //if pw incorrect, return to top loop.
     //will include injection countering later
-    char username[20];
+    char email[20];
     char password[20];
-    printf("Enter Username: ");
-    scanf("%s", username);
+    printf("Enter E-Mail: ");
+    scanf("%s", email);
     printf("Enter Password: ");
     scanf("%s", password);
     printf("%s, %s\n", username,password); //DEBUG
     if (strcmp(username,"admin") == 0)
-        return 1;
+    {
+        if (strcmp(password, "admin") == 0)
+            return 1; //admin admin ALWAYS WORKS
+    }
+    //SELECT u.password FROM users u WHERE u.email = email
+    //check if passwords match
+    //if they do, return 1
+
     return 0;
 }
 
