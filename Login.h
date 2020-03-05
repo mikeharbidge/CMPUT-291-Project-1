@@ -3,3 +3,4 @@
 int loginScreen();
 int signIn();
 int signUp();
+static int callback();

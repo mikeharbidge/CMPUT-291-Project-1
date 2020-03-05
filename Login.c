@@ -1,6 +1,7 @@
 //CMPUT 291 Mini-Project 1 Harbidge, Parhamglst, Wielgus
 //login.c contains the login function used at the start of the program before the cmd line is used
 //has two modes, either log in or sign up, which user decides
+//Includes some adapted code from lecture slides
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,13 +13,10 @@ int main()
 {
     //testing for login
     //NEEDS TO ERROR CHECK DB INIT
-    sqlite3 *db;
-    sqlite3_open("test.db", &db);
     int in = 0; //if login succeeded
     in = loginScreen();
     if (in)
         printf("***LOGIN SUCCEEDED***\n");
-    sqlite3_close(db);
     return 0;
 }
 
@@ -69,26 +67,57 @@ int signIn()
     //Handles signing in with an existing username and password
     //if pw incorrect, return to top loop.
     //will include injection countering later
+    sqlite3 *db; char *zErrMsg = 0;
+    int rc = 0;
+    const char* data = "Callback function called";
+    sqlite3_open("test.db", &db);
+
     char email[20];
     char password[20];
     printf("Enter E-Mail: ");
     scanf("%s", email);
     printf("Enter Password: ");
     scanf("%s", password);
-    printf("%s, %s\n", username,password); //DEBUG
-    if (strcmp(username,"admin") == 0)
+    printf("%s, %s\n", email,password); //DEBUG
+    if (strcmp(email,"admin") == 0)
     {
         if (strcmp(password, "admin") == 0)
-            return 1; //admin admin ALWAYS WORKS
+        {
+            printf("Login Successful, logging in as %s.\n", email);
+            return 1; //admin, admin ALWAYS WORKS
+        }
     }
     //SELECT u.password FROM users u WHERE u.email = email
+    char* SQL_pwFetch = strcat("SELECT u.password FROM users u WHERE u.email = email", email);
+    sqlite3_exec(db, SQL_pwFetch,callback,(void*)data, &zErrMsg);
+
+    if( rc != SQLITE_OK ) 
+    {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else {
+    fprintf(stdout, "Operation done successfully\n");
+    }
     //check if passwords match
     //if they do, return 1
 
+    sqlite3_close(db);
     return 0;
 }
 
 int signUp()
 {
     return 0;
+}
+
+static int callback(void *data, int argc, char **argv, char **aColName)
+{
+    int i;
+    fprintf(stderr, "%s: ", (const char*)data);
+    for(i = 0; i<argc; i++)
+    {
+    printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");
+    }
+printf("\n");
+return 0;
 }
