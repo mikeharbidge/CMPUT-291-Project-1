@@ -3,10 +3,6 @@
 //has two modes, either log in or sign up, which user decides
 //Includes some adapted code from lecture slides
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sqlite3.h>
-#include <string.h>
 #include "Login.h"
 
 int main()
@@ -108,16 +104,4 @@ int signIn()
 int signUp()
 {
     return 0;
-}
-
-static int callback(void *data, int argc, char **argv, char **aColName)
-{
-    int i;
-    fprintf(stderr, "%s: ", (const char*)data);
-    for(i = 0; i<argc; i++)
-    {
-    printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");
-    }
-printf("\n");
-return 0;
 }
