@@ -5,6 +5,8 @@
 
 #include "Login.h"
 
+//Testing Main
+/*
 int main()
 {
     //testing for login
@@ -15,6 +17,7 @@ int main()
         printf("***LOGIN SUCCEEDED***\n");
     return 0;
 }
+*/
 
 int loginScreen() 
 {
@@ -103,5 +106,17 @@ int signIn()
 
 int signUp()
 {
+    return 0;
+}
+
+static int callback(void *data, int argc, char **argv, char **aColName)
+{
+    int i;
+    fprintf(stderr, "%s: ", (const char*)data);
+    for(i = 0; i<argc; i++)
+    {
+    printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
     return 0;
 }
