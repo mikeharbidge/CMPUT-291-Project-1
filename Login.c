@@ -73,6 +73,7 @@ int signIn()
 
     char email[20];
     char password[20];
+    int valid = 0;
     printf("Enter E-Mail: ");
     scanf("%s", email);
     printf("Enter Password: ");
@@ -87,21 +88,22 @@ int signIn()
         }
     }
     //SELECT u.password FROM users u WHERE u.email = email
-    char* SQL_pwFetch = strcat("SELECT u.password FROM users u WHERE u.email = email", email);
-    sqlite3_exec(db, SQL_pwFetch,callback,(void*)data, &zErrMsg);
+    char SQL_pwFetch[100];
+    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\"", email);
+    
+    printf("SQL: %s\n", SQL_pwFetch);
+    rc = sqlite3_exec(db, SQL_pwFetch,callback,*password, &zErrMsg);
 
-    if( rc != SQLITE_OK ) 
+    if( rc != SQLITE_OK )
     {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     } else {
     fprintf(stdout, "Operation done successfully\n");
     }
-    //check if passwords match
-    //if they do, return 1
 
     sqlite3_close(db);
-    return 0;
+    return valid;
 }
 
 int signUp()
@@ -109,8 +111,9 @@ int signUp()
     return 0;
 }
 
-static int callback(void *data, int argc, char **argv, char **aColName)
+static int callback(void *data, int argc, char **argv, char **aColName, int valid,char* password )
 {
+    //callback handles checking if the password given matches 
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
     for(i = 0; i<argc; i++)
