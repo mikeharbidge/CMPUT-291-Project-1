@@ -4,6 +4,9 @@
 #include <sqlite3.h>
 #include <string.h>
 
+char userPwd[20];
+char userEmail[20];
+
 int loginScreen();
 int signIn();
 int signUp();

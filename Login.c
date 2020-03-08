@@ -5,19 +5,7 @@
 
 #include "Login.h"
 
-//Testing Main
-/*
-int main()
-{
-    //testing for login
-    //NEEDS TO ERROR CHECK DB INIT
-    int in = 0; //if login succeeded
-    in = loginScreen();
-    if (in)
-        printf("***LOGIN SUCCEEDED***\n");
-    return 0;
-}
-*/
+static int valid = 0;
 
 int loginScreen() 
 {
@@ -32,7 +20,7 @@ int loginScreen()
 
     while (continueTop) //top level loop
     {
-        printf("Select an option:\n1: Sign in as existing user \n2: Create new user \n3: Quit\nInput: ");
+        printf("---------------\nSelect an option:\n1: Sign in as existing user \n2: Create new user \n3: Quit\nInput: ");
         scanf("%s", userInput);
 
         if (userInput[0] == '1')
@@ -69,57 +57,60 @@ int signIn()
     sqlite3 *db; char *zErrMsg = 0;
     int rc = 0;
     const char* data = "Callback function called";
+
     sqlite3_open("test.db", &db);
 
-    char email[20];
-    char password[20];
     int valid = 0;
+
     printf("Enter E-Mail: ");
-    scanf("%s", email);
+    scanf("%s", userEmail);
     printf("Enter Password: ");
-    scanf("%s", password);
-    printf("%s, %s\n", email,password); //DEBUG
-    if (strcmp(email,"admin") == 0)
+    scanf("%s", userPwd);
+    if (strcmp(userEmail,"admin") == 0)
     {
-        if (strcmp(password, "admin") == 0)
+        if (strcmp(userPwd, "admin") == 0)
         {
-            printf("Login Successful, logging in as %s.\n", email);
+            printf("Login Successful, logging in as %s.\n", userEmail);
             return 1; //admin, admin ALWAYS WORKS
         }
     }
-    //SELECT u.password FROM users u WHERE u.email = email
+
+    //NEEDS COUNTERINJECTION HERE
     char SQL_pwFetch[100];
-    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\"", email);
-    
-    printf("SQL: %s\n", SQL_pwFetch);
-    rc = sqlite3_exec(db, SQL_pwFetch,callback,*password, &zErrMsg);
+    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\"", userEmail);
+
+
+    rc = sqlite3_exec(db, SQL_pwFetch,callback,(void *)data, &zErrMsg);
 
     if( rc != SQLITE_OK )
     {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
-    } else {
-    fprintf(stdout, "Operation done successfully\n");
     }
-
     sqlite3_close(db);
+
+    valid += 1;
+
+    if (valid)
+        printf("Login Successful. Signing in as %s", userEmail);
+    else
+        printf("Login Failed. E-Mail and Password do not match or do not exist.\n");
+    
     return valid;
 }
 
 int signUp()
 {
+    
     return 0;
 }
 
-static int callback(void *data, int argc, char **argv, char **aColName, int valid,char* password )
+static int callback(void *data, int argc, char **argv, char **aColName)
 {
-    //callback handles checking if the password given matches 
-    int i;
-    fprintf(stderr, "%s: ", (const char*)data);
-    for(i = 0; i<argc; i++)
-    {
-    printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");
-    }
-    printf("\n");
+    //callback handles checking if the password given matches
+    //if no password is returned from query, callback is ignored, automatically invalid
+
+    printf("DEBUG: real password is: %s\n",argv[0]);
+    //DOES NOT WORK FOR NOW
     return 0;
 }
