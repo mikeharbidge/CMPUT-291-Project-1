@@ -11,38 +11,35 @@ int main(){
     in = loginScreen();
     if (in){
         printf("***LOGIN SUCCEEDED***\n");
-	printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\n");
-	while(scanf("%d",&choice)){
+	do{
+	  printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\n");
+	  scanf("%d",&choice);
 	  switch(choice){
 	  case 1:
-	    printf("chose 1\n");
 	    break;
 	    //list products
 	  case 2:
-	    printf("chose 2\n");
 	    break;
 	    //Search for Sales 
 	  case 3:
-	    printf("chose 3\n");
 	    break;
 	    //Post a sale
 	  case 4:
-	    printf("chose 4\n");
+	    Search_Users();
 	    break;
 	    //Search for users
 	  case 5:
-	    printf("chose 5\n");
-	    return 0;//temp
-	    break;
+	    return 0;
 	    //logout and close DB
 	  default:
-	    printf("Error: %d is not an option\n", choice);
+	    printf("Error: Choice is not an option\n");
 	    break;
 	  }
-	}
+	}while(1);
     }
     return 0;
-    }
+}
+
 
 extern int openDB(char *filename, sqlite3 *db)
 {
@@ -62,7 +59,7 @@ extern int openDB(char *filename, sqlite3 *db)
     return 0;
 }
 
-static int callback(void *data, int argc, char **argv, char **aColName)
+/*static int callback(void *data, int argc, char **argv, char **aColName)
 {
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
@@ -73,3 +70,4 @@ static int callback(void *data, int argc, char **argv, char **aColName)
     printf("\n");
     return 0;
 }
+*/
