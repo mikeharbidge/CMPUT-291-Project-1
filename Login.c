@@ -79,7 +79,6 @@ int signIn()
     char SQL_pwFetch[100];
     sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\"", userEmail);
 
-
     rc = sqlite3_exec(db, SQL_pwFetch,callback,(void *)data, &zErrMsg);
 
     if( rc != SQLITE_OK )
@@ -101,7 +100,72 @@ int signIn()
 
 int signUp()
 {
+    //sign-up handles getting all info from user to create new row in user table.
+    //!!all values other than pwd are converted to lower case !!
     
+    //email and pwd already defined
+    char name[16]; char city[15]; char gender[1];
+    int inputting = 1;
+
+    printf("Registering as a new user requires several fields of information.\n");
+    printf("It requires a unique E-mail, along with name, password, city and gender.\n");
+    printf("Type \"q\" at any time to quit.\n--------------------------\n");
+
+    while (inputting)
+    {
+        printf("Enter E-mail (max chars 16): ");
+        scanf("%s", userEmail);
+        //must check to see if unique value
+        if (strcmp(userEmail, "q") == 0)
+            return 0;
+        inputting = 0;
+    }
+
+    inputting = 1;
+    while (inputting)
+    {
+        printf("Enter Password (max chars 4): ");
+        scanf("%s", userPwd);
+        //must check to see if unique value
+        if (strcmp(userPwd, "q") == 0)
+            return 0;
+        inputting = 0;
+    }
+
+    inputting = 1;
+    while (inputting)
+    {
+        printf("Enter name (max chars 16): ");
+        scanf("%s", name);
+        //must check to see if unique value
+        if (strcmp(name, "q") == 0)
+            return 0;
+        inputting = 0;
+    }
+
+    inputting = 1;
+    while (inputting)
+    {
+        printf("Enter city (max chars 15): ");
+        scanf("%s", city);
+        //must check to see if unique value
+        if (strcmp(city, "q") == 0)
+            return 0;
+        inputting = 0;
+    }
+
+    inputting = 1;
+    while (inputting)
+    {
+        printf("Enter gender (M or F): ");
+        scanf("%s", gender);
+        //must check to see if unique value
+        if (strcmp(name, "q") == 0)
+            return 0;
+        inputting = 0;
+    }
+
+    printf("%s, %s, %s, %s, %s\n", userEmail,userPwd,name,city,gender);
     return 0;
 }
 

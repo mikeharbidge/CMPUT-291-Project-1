@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <sqlite3.h>
 #include <string.h>
+#include <ctype.h>
 
 char userPwd[20];
 char userEmail[20];
