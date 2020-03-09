@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <string.h>
 #include "Login.h"
+#include "ListProducts.h"
 
 int main();
 

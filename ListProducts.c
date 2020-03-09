@@ -1,4 +1,3 @@
-#include "ListProducts.h"
 //CMPUT 291 Mini-Project 1 Harbidge, sayedpar, Wielgus
 //listproducts does the list products function described in the specifications
 /*
@@ -6,33 +5,23 @@ Resources:
 https://stackoverflow.com/questions/50016807/how-can-i-set-a-variable-placeholder-inside-a-string-in-c, Medalib
 */
 
+#include "ListProducts.h"
 
-int main()
+void list_products(sqlite3 *db, char *user)
 {
-    sqlite3* db = 0;
-    int open = sqlite3_open("test.db", &db);
-    if (open)
-    {
-        list_products(db, "aaaaaaa");
-    }
-    
-    return 0;
-}
-
-void list_products(sqlite3 *db, char* user)
-{
-    const char *listProductsQuery = "SELECT DISTINCT p.pid, p.descr, count(pr.rid), avg(pr.rating), number_of_asales.cnt \
-    FROM products p, previews pr, \
-    (SELECT p.pid as pid, count(*) as cnt \
-    FROM sales s \
-    WHERE p.pid = s.sid AND julianday(s.edate) > julianday('now')) number_of_asales \
-    WHERE p.pid = pr.pid AND p.pid = number_of_asales.pid \
-    GROUP BY p.pid, p.pdescr, pr.rid, number_of_asales.cnt \
-    ORDER BY number_of_asales.cnt|DESC; \
+    /*
+    The only function that needs to be called inside main
+    It takes the database and the current user email as arguments
+    */
+    const char *listProductsQuery = "SELECT DISTINCT p.pid, p.descr, count(pr.rid), avg(pr.rating), count(s.edate) \
+    FROM products p LEFT OUTER JOIN previews pr ON p.pid = pr.pid LEFT OUTER JOIN sales s ON p.pid = s.pid \
+    WHERE s.edate > datetime('now') \
+    GROUP BY p.pid, p.descr, s.sid \
+    ORDER BY count(s.edate) DESC; \
     ";
     printf("Product ID\t\tProduct Description\t\tReview count\t\tAverage rating\t\tNumber of active sales\n");
     sqlite3_exec(db, listProductsQuery, list_products_callback, NULL, NULL); //TODO: Error handling needed
-    const char* numberOfReviewsQuery = "SELECT count(*) \
+    const char *numberOfReviewsQuery = "SELECT count(*) \
     FROM previews";
     //TODO: number of reviews
     product_actions(db, 100, user);
@@ -40,7 +29,8 @@ void list_products(sqlite3 *db, char* user)
 
 static int list_products_callback(void *list, int count, char **data, char **columns)
 {
-    for (long i = 0; i < count; i++)
+    printf("%d\n", count);
+    for (int i = 0; i < count; i++)
     {
         printf("%s\t\t", data[i]);
         if (i == count - 1)
@@ -105,12 +95,12 @@ long get_int_input(char *promptMsg, char *repromptMsg, long lowerBound, long upp
     return input;
 }
 
-int get_pid(sqlite3* db, const char *promptMsg, const char *repromptMsg, int strlen, char* pid)
+int get_pid(sqlite3 *db, const char *promptMsg, const char *repromptMsg, int strlen, char *pid)
 {
     char input[strlen];
     printf("%s", promptMsg);
     int scanfOutput = scanf("%s", input);
-    char* zErrMsg = 0;
+    char *zErrMsg = 0;
     int rc = 0;
     while (!scanfOutput)
     {
@@ -138,14 +128,14 @@ int get_pid(sqlite3* db, const char *promptMsg, const char *repromptMsg, int str
 
 static int pid_validation_callback(void *list, int count, char **data, char **columns)
 {
-    if(data[0] > 0){
+    if (data[0] > 0)
+    {
         return SQLITE_OK;
     }
     else
     {
         return SQLITE_ERROR;
     }
-    
 }
 
 float get_float_input(char *promptMsg, char *repromptMsg, long lowerBound, long upperBound)
@@ -201,13 +191,14 @@ static int list_reviews_callback(void *list, int count, char **data, char **colu
 
 void list_sales(sqlite3 *db, char *pid)
 {
-    const char* listSalesQuery = sqlite3_mprintf("SELECT s.sid AS Sale ID, s.lister AS Lister \
+    const char *listSalesQuery = sqlite3_mprintf("SELECT s.sid AS Sale ID, s.lister AS Lister \
     s.descr AS Description, count(b.bid) AS number of bids, s.rprice AS Reserved price, \
     max(b.amount) AS Max bid, datetime(s.edate - 'now') AS sale ends \
     FROM sales s LEFT OUTER JOIN bids b USING s.sid = b.sid \
     WHERE s.pid = \"%s\"\
     GROUP BY s.sid \
-    ORDER BY sale ends", pid);
+    ORDER BY sale ends",
+                                                 pid);
     sqlite3_exec(db, listSalesQuery, list_sales_callback, NULL, NULL);
 }
 
@@ -226,7 +217,7 @@ static int list_sales_callback(void *list, int count, char **data, char **column
             else
             {
                 printf("%s: %s\n", columns[4], data[4]);
-                i = 5; 
+                i = 5;
                 continue;
             }
         }
@@ -234,7 +225,6 @@ static int list_sales_callback(void *list, int count, char **data, char **column
         {
             printf("%s: %s\n", columns[i], data[i]);
         }
-        
     }
     return 0;
 }

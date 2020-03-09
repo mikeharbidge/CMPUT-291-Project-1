@@ -12,12 +12,15 @@ int main(){
     if (in){
         printf("***LOGIN SUCCEEDED***\n");
 	printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\n");
+  sqlite3* db = 0;
+  openDB("test.db", db);
+  printf("%s", db);
 	while(scanf("%d",&choice)){
 	  switch(choice){
 	  case 1:
 	    printf("chose 1\n");
+      list_products(db, "Admin");
 	    break;
-	    //list products
 	  case 2:
 	    printf("chose 2\n");
 	    break;
