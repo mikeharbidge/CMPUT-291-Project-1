@@ -1,3 +1,4 @@
+#include "ListProducts.h"
 //CMPUT 291 Mini-Project 1 Harbidge, sayedpar, Wielgus
 //listproducts does the list products function described in the specifications
 /*
@@ -5,14 +6,20 @@ Resources:
 https://stackoverflow.com/questions/50016807/how-can-i-set-a-variable-placeholder-inside-a-string-in-c, Medalib
 */
 
-#include <stdio.h>
-#include <sqlite3.h>
-#include <stdbool.h>
 
-#define REVIEW_SIZE 20
-#define PID_LEN 4
+int main()
+{
+    sqlite3* db = 0;
+    int open = sqlite3_open("test.db", &db);
+    if (open)
+    {
+        list_products(db, "aaaaaaa");
+    }
+    
+    return 0;
+}
 
-void list_products(sqlite3 *db)
+void list_products(sqlite3 *db, char* user)
 {
     const char *listProductsQuery = "SELECT DISTINCT p.pid, p.descr, count(pr.rid), avg(pr.rating), number_of_asales.cnt \
     FROM products p, previews pr, \
@@ -25,10 +32,13 @@ void list_products(sqlite3 *db)
     ";
     printf("Product ID\t\tProduct Description\t\tReview count\t\tAverage rating\t\tNumber of active sales\n");
     sqlite3_exec(db, listProductsQuery, list_products_callback, NULL, NULL); //TODO: Error handling needed
-    product_actions(db);
+    const char* numberOfReviewsQuery = "SELECT count(*) \
+    FROM previews";
+    //TODO: number of reviews
+    product_actions(db, 100, user);
 }
 
-static long list_products_callback(void *list, long count, char **data, char **columns)
+static int list_products_callback(void *list, int count, char **data, char **columns)
 {
     for (long i = 0; i < count; i++)
     {
@@ -49,8 +59,9 @@ void product_actions(sqlite3 *db, long numberOfReviews, char *reviewer)
     {
         const char *pidPromptMsg = "Choose a product ID to perform action on (or 0 to abort):\n";
         const char *pidRepromptMsg = "Wrong input!\nEnter a valid product ID (or 0 to abort):\n";
-        char *pid = get_pid(pidPromptMsg, pidRepromptMsg, PID_LEN);
-        if (pid != "")
+        char *pid = 0;
+        get_pid(db, pidPromptMsg, pidRepromptMsg, PID_LEN, pid);
+        if (pid != NULL)
         {
             printf("0. Abort\n");
             printf("1. Write a product review\n");
@@ -60,8 +71,7 @@ void product_actions(sqlite3 *db, long numberOfReviews, char *reviewer)
             switch (action)
             {
             case 0:
-                abort();
-                break;
+                return;
             case 1:
                 write_review(db, pid, numberOfReviews, reviewer);
                 break;
@@ -77,7 +87,7 @@ void product_actions(sqlite3 *db, long numberOfReviews, char *reviewer)
         }
         else
         {
-            abort();
+            return; //Abort
         }
     }
 }
@@ -85,46 +95,48 @@ void product_actions(sqlite3 *db, long numberOfReviews, char *reviewer)
 long get_int_input(char *promptMsg, char *repromptMsg, long lowerBound, long upperBound)
 {
     long input = 0;
-    printf(promptMsg);
-    int scanfOutput = scanf("%d", &input);
+    printf("%s", promptMsg);
+    int scanfOutput = scanf("%ld", &input);
     while (!scanfOutput || input < lowerBound || input > upperBound)
     {
-        printf(repromptMsg);
-        scanfOutput = scanf("%d", &input);
+        printf("%s", repromptMsg);
+        scanfOutput = scanf("%ld", &input);
     }
     return input;
 }
 
-char* get_pid(sqlite3* db, char *promptMsg, char *repromptMsg, int strlen)
+int get_pid(sqlite3* db, const char *promptMsg, const char *repromptMsg, int strlen, char* pid)
 {
     char input[strlen];
-    printf(promptMsg);
-    int scanfOutput = scanf("%s", &input);
+    printf("%s", promptMsg);
+    int scanfOutput = scanf("%s", input);
     char* zErrMsg = 0;
     int rc = 0;
     while (!scanfOutput)
     {
-        printf(repromptMsg);
-        scanfOutput = scanf("%s", &input);
+        printf("%s", repromptMsg);
+        scanfOutput = scanf("%s", input);
     }
     char *pidValidation = sqlite3_mprintf("SELECT count(*) \
     FROM products \
     WHERE pid = \"%s\"",
                                           input);
     rc = sqlite3_exec(db, pidValidation, pid_validation_callback, NULL, &zErrMsg);
-    if (rc = SQLITE_OK)
+    if (rc == SQLITE_OK)
     {
-        return input;
+        pid = input;
+        return SQLITE_OK;
     }
     else
     {
         fprintf(stderr, "SQL Error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
+        pid = "";
+        return SQLITE_ERROR;
     }
-    return "";
 }
 
-static long pid_validation_callback(void *list, long count, char **data, char **columns)
+static int pid_validation_callback(void *list, int count, char **data, char **columns)
 {
     if(data[0] > 0){
         return SQLITE_OK;
@@ -139,11 +151,11 @@ static long pid_validation_callback(void *list, long count, char **data, char **
 float get_float_input(char *promptMsg, char *repromptMsg, long lowerBound, long upperBound)
 {
     float input = 0;
-    printf(promptMsg);
+    printf("%s", promptMsg);
     int scanfOutput = scanf("%f", &input);
     while (!scanfOutput || input < lowerBound || input > upperBound)
     {
-        printf(repromptMsg);
+        printf("%s", repromptMsg);
         scanfOutput = scanf("%f", &input);
     }
     return input;
@@ -153,7 +165,7 @@ void write_review(sqlite3 *db, char *pid, long numberOfReviews, char *reviewer)
 {
     printf("Review text:\n");
     char text[REVIEW_SIZE] = {0};
-    scanf("%s", &text);
+    scanf("%s", text);
     puts("Rating: ");
     float rating = 0;
     rating = get_float_input(NULL, "Rating must be a number between 1 to 5:\n", 1, 5);
@@ -173,12 +185,12 @@ void list_reviews(sqlite3 *db, char *pid)
     sqlite3_exec(db, listReviewsQuery, list_reviews_callback, NULL, NULL); //TODO: Error handling
 }
 
-static long list_reviews_callback(void *list, long count, char **data, char **columns)
+static int list_reviews_callback(void *list, int count, char **data, char **columns)
 {
     for (int i = 0; i < count; i++)
     {
         printf("%s\t\t", data[i]);
-        if (i = count - 1)
+        if (i == count - 1)
         {
             printf("\n");
         }
@@ -199,7 +211,7 @@ void list_sales(sqlite3 *db, char *pid)
     sqlite3_exec(db, listSalesQuery, list_sales_callback, NULL, NULL);
 }
 
-static long list_sales_callback(void *list, long count, char **data, char **columns)
+static int list_sales_callback(void *list, int count, char **data, char **columns)
 {
     for (int i = 0; i < count; i++)
     {
@@ -208,12 +220,12 @@ static long list_sales_callback(void *list, long count, char **data, char **colu
             if (data[i] > 0)
             {
                 i = 5;
-                printf("%s: %f\n", columns[i], data[i]);
+                printf("%s: %s\n", columns[i], data[i]);
                 continue;
             }
             else
             {
-                printf("%s: %f\n", columns[4], data[4]);
+                printf("%s: %s\n", columns[4], data[4]);
                 i = 5; 
                 continue;
             }
@@ -224,5 +236,5 @@ static long list_sales_callback(void *list, long count, char **data, char **colu
         }
         
     }
-    
+    return 0;
 }
