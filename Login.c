@@ -5,7 +5,6 @@
 
 #include "Login.h"
 
-static int valid = 0;
 
 int loginScreen() 
 {
@@ -54,13 +53,12 @@ int signIn()
     //Handles signing in with an existing username and password
     //if pw incorrect, return to top loop.
     //will include injection countering later
+    int valid = 0;
     sqlite3 *db; char *zErrMsg = 0;
     int rc = 0;
     char realPW[20];
 
     sqlite3_open("test.db", &db);
-
-    int valid = 0;
 
     printf("Enter E-Mail: ");
     scanf("%s", userEmail);
