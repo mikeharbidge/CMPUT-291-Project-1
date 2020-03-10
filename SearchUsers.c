@@ -6,15 +6,15 @@
 #include <string.h>
 #include "SearchUsers.h"
 
-void Search_Users(){
-  sqlite3 *db; char *zErrMsg = 0;
-  const char* data = "Callback function called\n";
+void Search_Users(char* userEmail,sqlite3* db){
+  char *zErrMsg = 0;
+  const char* data = "Callback function called";
   
   int choice;
   char s[50];
   char text[500];
   printf("Enter Keywords of User\n");
-  int rc = sqlite3_open("test.db", &db);
+  int rc;
   fgets(s,50,stdin);
   fgets(s,50,stdin);
   if(s[strlen(s)-1]=='\n')
@@ -51,7 +51,7 @@ void Search_Users(){
       int rating=0;
       scanf("%d",&rating);
       //insert review statement NEED CURRENT USER VARIABLE
-      sprintf(search, "insert into reviews values ('%s', '%s', %d, '%s', 'DATE('now')')",reviewer,s,rating,text);
+      sprintf(search, "insert into reviews values ('%s', '%s', %d, '%s', datetime('now')",userEmail,s,rating,text);
       printf("SQL: %s\n",search);
       rc = sqlite3_exec(db, search,callback,(void*)data, &zErrMsg);
 
@@ -79,7 +79,6 @@ void Search_Users(){
       return;
     }
   }while(1);
-  sqlite3_close(db);
   return;
 }
 
@@ -91,7 +90,7 @@ void Search_Users(){
 static int callback(void *data, int argc, char **argv, char **aColName)
 {
   int i;
-  fprintf(stderr, "%s: ", (const char*)data);
+  fprintf(stderr, "%s: \n", (const char*)data);
   for(i = 0; i<argc; i++)
     {
       printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");

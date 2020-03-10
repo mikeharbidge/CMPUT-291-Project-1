@@ -7,7 +7,17 @@ int main(int argc, char** argv){
     //testing for login
     //NEEDS TO ERROR CHECK DB INIT
   sqlite3* db;
-  sqlite3_open(argv[1],&db);
+  int rc = sqlite3_open(argv[1],&db);
+  if(rc)
+    {
+      fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+      return 0;
+    }else
+    {
+      fprintf(stderr, "Opened database successfully\n");
+      
+    }
+  
     int in = 0; //if login succeeded
     int choice;//input for choosing functionality
     in = loginScreen();
@@ -31,6 +41,7 @@ int main(int argc, char** argv){
 	    break;
 	    //Search for users
 	  case 5:
+	    sqlite3_close(db);
 	    return 0;
 	    //logout and close DB
 	  default:
