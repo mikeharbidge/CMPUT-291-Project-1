@@ -57,6 +57,7 @@ int signIn()
     sqlite3 *db; char *zErrMsg = 0;
     int rc = 0;
     const char* data = "Callback function called";
+    char realPW[20]; //password in database
 
     sqlite3_open("test.db", &db);
 
@@ -77,7 +78,7 @@ int signIn()
 
     //NEEDS COUNTERINJECTION HERE
     char SQL_pwFetch[100];
-    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\"", userEmail);
+    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\";", userEmail);
 
     rc = sqlite3_exec(db, SQL_pwFetch,callback,(void *)data, &zErrMsg);
 
@@ -88,7 +89,10 @@ int signIn()
     }
     sqlite3_close(db);
 
+    printf("%s", data);
+
     valid += 1;
+
 
     if (valid)
         printf("Login Successful. Signing in as %s", userEmail);
@@ -104,7 +108,9 @@ int signUp()
     //!!all values other than pwd are converted to lower case !!
     
     //email and pwd already defined
-    char name[16]; char city[15]; char gender[1];
+    sqlite3 *db; int rc = 0;
+    char *zErrMsg = 0;
+    char name[16]; char city[16]; char gender[2];
     int inputting = 1;
 
     printf("Registering as a new user requires several fields of information.\n");
@@ -165,7 +171,30 @@ int signUp()
         inputting = 0;
     }
 
-    printf("%s, %s, %s, %s, %s\n", userEmail,userPwd,name,city,gender);
+    printf("User Info: %s, %s, %s, %s, %s\n", userEmail,userPwd,name,city,gender);
+
+    sqlite3_open("test.db", &db);
+
+    char SQL_createUser[150];
+    sprintf(SQL_createUser, "INSERT INTO users VALUES (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\");", userEmail, name, userPwd, city, gender);
+    printf("%s",SQL_createUser);
+
+    rc = sqlite3_exec(db, SQL_createUser,NULL,NULL, &zErrMsg);
+
+    if( rc != SQLITE_OK )
+    {
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+        
+    }
+    else
+    {
+        printf("User Successfullly registered. Signing in as %s\n", userEmail);
+        sqlite3_close(db);
+        return 0;
+    }
+    
+    sqlite3_close(db);
     return 0;
 }
 
@@ -175,6 +204,6 @@ static int callback(void *data, int argc, char **argv, char **aColName)
     //if no password is returned from query, callback is ignored, automatically invalid
 
     printf("DEBUG: real password is: %s\n",argv[0]);
-    //DOES NOT WORK FOR NOW
+    sprintf((char *)data, "%s", argv[0]);
     return 0;
 }
