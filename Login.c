@@ -56,8 +56,7 @@ int signIn()
     //will include injection countering later
     sqlite3 *db; char *zErrMsg = 0;
     int rc = 0;
-    const char* data = "Callback function called";
-    char realPW[20]; //password in database
+    char realPW[20];
 
     sqlite3_open("test.db", &db);
 
@@ -78,21 +77,31 @@ int signIn()
 
     //NEEDS COUNTERINJECTION HERE
     char SQL_pwFetch[100];
-    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE u.email = \"%s\";", userEmail);
+    sqlite3_stmt *stmt;
 
-    rc = sqlite3_exec(db, SQL_pwFetch,callback,(void *)data, &zErrMsg);
+    sprintf(SQL_pwFetch, "SELECT u.pwd FROM users u WHERE lower(u.email) = lower(\"%s\");", userEmail);
+
+    rc = sqlite3_prepare_v2(db, SQL_pwFetch,-1, &stmt, 0);
 
     if( rc != SQLITE_OK )
     {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
+
+    rc = sqlite3_step(stmt);
+    
+
+    if (rc == SQLITE_ROW) 
+    {
+        sprintf(realPW,"%s",sqlite3_column_text(stmt, 0));
+        if (strcmp(realPW, userPwd) == 0)
+            valid = 1;
+    }
+    
+
+    sqlite3_finalize(stmt);
     sqlite3_close(db);
-
-    printf("%s", data);
-
-    valid += 1;
-
 
     if (valid)
         printf("Login Successful. Signing in as %s", userEmail);
@@ -195,15 +204,5 @@ int signUp()
     }
     
     sqlite3_close(db);
-    return 0;
-}
-
-static int callback(void *data, int argc, char **argv, char **aColName)
-{
-    //callback handles checking if the password given matches
-    //if no password is returned from query, callback is ignored, automatically invalid
-
-    printf("DEBUG: real password is: %s\n",argv[0]);
-    sprintf((char *)data, "%s", argv[0]);
     return 0;
 }
