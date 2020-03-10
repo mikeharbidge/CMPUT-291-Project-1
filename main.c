@@ -25,7 +25,7 @@ int main(){
 	    break;
 	    //Post a sale
 	  case 4:
-	    Search_Users();
+	    //Search_Users();
 	    break;
 	    //Search for users
 	  case 5:
