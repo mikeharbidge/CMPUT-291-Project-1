@@ -24,7 +24,7 @@ int main(int argc, char** argv){
     if (in){
         printf("***LOGIN SUCCEEDED***\n");
 	do{
-	  printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\n");
+	  printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\nInput: ");
 	  scanf("%d",&choice);
 	  switch(choice){
 	  case 1:
