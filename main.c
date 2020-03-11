@@ -19,6 +19,7 @@ int main(){
 	    break;
 	    //list products
 	  case 2:
+      searchSales();
 	    break;
 	    //Search for Sales 
 	  case 3:
