@@ -5,7 +5,6 @@
 
 #include "Login.h"
 
-
 int loginScreen() 
 {
     //login screen is the parent function for both other 
@@ -54,11 +53,9 @@ int signIn()
     //if pw incorrect, return to top loop.
     //will include injection countering later
     int valid = 0;
-    sqlite3 *db; char *zErrMsg = 0;
+    char *zErrMsg = 0;
     int rc = 0;
     char realPW[20];
-
-    sqlite3_open("test.db", &db);
 
     printf("Enter E-Mail: ");
     scanf("%s", userEmail);
@@ -99,7 +96,6 @@ int signIn()
     
 
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
 
     if (valid)
         printf("Login Successful. Signing in as %s", userEmail);
@@ -115,7 +111,7 @@ int signUp()
     //!!all values other than pwd are converted to lower case !!
     
     //email and pwd already defined
-    sqlite3 *db; int rc = 0;
+    int rc = 0;
     char *zErrMsg = 0;
     char name[16]; char city[16]; char gender[2];
     int inputting = 1;
@@ -180,8 +176,6 @@ int signUp()
 
     printf("User Info: %s, %s, %s, %s, %s\n", userEmail,userPwd,name,city,gender);
 
-    sqlite3_open("test.db", &db);
-
     char SQL_createUser[150];
     sprintf(SQL_createUser, "INSERT INTO users VALUES (\"%s\", \"%s\", \"%s\", \"%s\", \"%s\");", userEmail, name, userPwd, city, gender);
     printf("%s",SQL_createUser);
@@ -197,10 +191,8 @@ int signUp()
     else
     {
         printf("User Successfullly registered. Signing in as %s\n", userEmail);
-        sqlite3_close(db);
         return 0;
     }
     
-    sqlite3_close(db);
     return 0;
 }

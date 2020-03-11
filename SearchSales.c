@@ -8,11 +8,9 @@ int searchSales()
 
     int n, i = 0;
 
-    sqlite3 *db; int rc = 0;
+    int rc = 0;
     char *zErrMsg = 0;
     const char* data = "Callback function called";
-
-    sqlite3_open("test.db", &db);
 
     printf("Enter amount of keywords to search with: ");
     scanf("%d", &n);
@@ -73,7 +71,6 @@ int searchSales()
     for(i = 0; i < n; i++)
         free(a[i]);
 
-    sqlite3_close(db);
     return 0;
 }
 
