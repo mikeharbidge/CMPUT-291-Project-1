@@ -17,10 +17,6 @@ void Post_Sale(char* userEmail, sqlite3* db){
   fgets(sid,50,stdin);
   if(sid[strlen(sid)-1]=='\n')
     sid[strlen(sid)-1]='\0';
-  printf("Enter Product_id: ");
-  fgets(pid,50,stdin);
-  if(pid[strlen(pid)-1]=='\n')
-    pid[strlen(pid)-1]='\0';
   printf("Enter review description: ");
   fgets(text,500,stdin);
   if(text[strlen(text)-1]=='\n')
@@ -31,12 +27,13 @@ void Post_Sale(char* userEmail, sqlite3* db){
     cond[strlen(cond)-1]='\0';
   printf("How many days will the sale be up?");
   scanf("%d",&days);
-  printf("What is the price? (0 if none)");
+  printf("What is the pid? ");
+  scanf("%s",pid);
+  printf("What is the price? ");
   scanf("%d",&price);
-  
   //insert sale statement
   sprintf(search, "insert into sales values ('%s', '%s', '%s', datetime('now','+%d days'), '%s', '%s', %d)",sid,userEmail,pid,days,text,cond,price);
-  //printf("SQL: %s\n",search);
+  printf("SQL: %s\n",search);
   int rc = sqlite3_exec(db, search,callback,(void*)data, &zErrMsg);
 
   if( rc != SQLITE_OK )
