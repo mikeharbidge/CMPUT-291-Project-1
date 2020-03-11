@@ -49,6 +49,7 @@ int main(int argc, char** argv){
 	      break;
 	      //Search for Sales 
 	    case 3:
+		Post_Sale(userEmail,db);
 	      break;
         //Post a sale
       case 4:
