@@ -8,5 +8,7 @@
 
 int main();
 
+static int callback(void *data, int argc, char **argv, char **aColName);
+
 extern int openDB(char *filename, sqlite3 *db;);
 //static int callback(void *data, int argc, char **argv, char **aColName); //Callback will NOT transfer between files

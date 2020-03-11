@@ -5,3 +5,4 @@
 #include <ctype.h>
 
 int searchSales();
+static int callback(void *data, int argc, char **argv, char **aColName);

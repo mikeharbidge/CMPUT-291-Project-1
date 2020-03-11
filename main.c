@@ -60,7 +60,7 @@ extern int openDB(char *filename, sqlite3 *db)
     return 0;
 }
 
-/*static int callback(void *data, int argc, char **argv, char **aColName)
+static int callback(void *data, int argc, char **argv, char **aColName)
 {
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
@@ -71,4 +71,3 @@ extern int openDB(char *filename, sqlite3 *db)
     printf("\n");
     return 0;
 }
-*/
