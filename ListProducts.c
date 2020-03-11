@@ -227,7 +227,7 @@ void list_sales(sqlite3 *db, char *pid)
     s.descr AS Description, count(b.bid) AS number_of_bids, s.rprice AS Reserved_price, \
     ifnull(max(b.amount), 0) AS Max_bid, ifnull(cast(julianday(s.edate)-julianday('now') as int),0) AS sale_ends \
     FROM sales s LEFT OUTER JOIN bids b ON s.sid = b.sid \
-    WHERE s.pid = \"%s\"\
+    WHERE s.pid = \"%s\" AND julianday(s.edate)-julianday('now') > 0 \
     GROUP BY s.sid \
     ORDER BY sale_ends",
                                                  pid);
