@@ -15,8 +15,8 @@ int get_pid(sqlite3* db, const char *promptMsg, const char *repromptMsg, int str
 static int pid_validation_callback(void *list, int count, char **data, char **columns);
 float get_float_input(char *promptMsg, char *repromptMsg, float lowerBound, float upperBound);
 void write_preview(sqlite3 *db, char *pid, long numberOfReviews, char *reviewer);
-void list_reviews(sqlite3 *db, char *pid);
-static int list_reviews_callback(void *list, int count, char **data, char **columns);
+void list_reviews_lp(sqlite3 *db, char *pid);
+static int list_reviews_lp_callback(void *list, int count, char **data, char **columns);
 void list_sales(sqlite3 *db, char *pid);
 static int list_sales_callback(void *list, int count, char **data, char **columns);
 static int number_of_reviews_callback(void *list, int count, char **data, char **columns);

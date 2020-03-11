@@ -3,9 +3,9 @@
 #include <sqlite3.h>
 #include <string.h>
 #include "Login.h"
-#include "ListProducts.h"
 #include "SearchUsers.h"
 #include "SearchSales.h"
+#include "ListProducts.h"
 
 sqlite3* db;
 

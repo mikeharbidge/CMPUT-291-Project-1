@@ -6,23 +6,14 @@
 #include <string.h>
 #include "SearchUsers.h"
 
-void Search_Users(){
-  sqlite3 *db; char *zErrMsg = 0;
-  const char* data = "Callback function called\n";
+void Search_Users(char* userEmail,sqlite3* db){
+  char *zErrMsg = 0;
+  const char* data = "Callback function called";
   
   char choice;
   char s[50];
-<<<<<<< HEAD
-<<<<<<< HEAD
-  char text[500];
-  printf("Enter Keywords of User\n");
-  int rc = sqlite3_open("test.db", &db);
-=======
-=======
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
   printf("Enter Keyword of User: ");
   int rc;
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
   fgets(s,50,stdin);
   fgets(s,50,stdin);
   if(s[strlen(s)-1]=='\n')
@@ -44,47 +35,6 @@ void Search_Users(){
   printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\nInput:\
  ");
   
-<<<<<<< HEAD
-<<<<<<< HEAD
-  do{
-    printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\n");
-    scanf("%d",&choice);
-    switch(choice){
-    case 1:
-      //get all needed info and insert into table
-      printf("Enter email of user: ");
-      scanf("%s",s);
-      printf("Enter review text:\n");
-      fgets(text,50,stdin);
-      fgets(text,500,stdin);
-      if(s[strlen(s)-1]=='\n')
-	s[strlen(s)-1]='\0';
-      printf("Enter rating: ");
-      int rating=0;
-      scanf("%d",&rating);
-      //insert review statement NEED CURRENT USER VARIABLE
-      sprintf(search, "insert into reviews values ('%s', '%s', %d, '%s', 'DATE('now')')",reviewer,s,rating,text);
-      printf("SQL: %s\n",search);
-      rc = sqlite3_exec(db, search,callback,(void*)data, &zErrMsg);
-
-      if( rc != SQLITE_OK )
-	{
-	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
-	  sqlite3_free(zErrMsg);
-	}else{
-	fprintf(stdout, "Operation done successfully\n");
-      }
-      
-      break;
-      //write review
-    case 2:
-      break;
-      //list all active listings
-    case 3:
-      break;
-      //list all reviews of the user
-    case 4:
-=======
   while(scanf("%c",&choice)){
     switch(choice){
     case '1':
@@ -99,41 +49,14 @@ void Search_Users(){
       list_reviews(userEmail,db);
       break;
       //list all reviews of the user
-=======
-  while(scanf("%c",&choice)){
-    switch(choice){
-    case '1':
-      write_review(userEmail,db);     
-      break;
-      //write review
-    case '2':
-      list_listings(userEmail,db);
-      break;
-      //list all active listings
-    case '3':
-      list_reviews(userEmail,db);
-      break;
-      //list all reviews of the user
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
     case '4':
       printf("Returning...\n");
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
       return;
       //go back to previous menu
     default:
       printf("Error: Choice is not an option\n");
-      return;
+      break;
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-  }while(1);
-  sqlite3_close(db);
-  return;
-}
-
-=======
-=======
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
     printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\nInput:\
  ");
     char f[20];
@@ -222,7 +145,6 @@ void write_review(char* userEmail, sqlite3* db){
   }
 }
 
->>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
 //example
 //char* SQL_pwFetch = strcat("SELECT u.password FROM users u WHERE u.email = email", email);
 //sqlite3_exec(db, SQL_pwFetch,callback,(void*)data, &zErrMsg);
@@ -231,7 +153,7 @@ void write_review(char* userEmail, sqlite3* db){
 static int callback(void *data, int argc, char **argv, char **aColName)
 {
   int i;
-  fprintf(stderr, "%s: ", (const char*)data);
+  fprintf(stderr, "%s: \n", (const char*)data);
   for(i = 0; i<argc; i++)
     {
       printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");

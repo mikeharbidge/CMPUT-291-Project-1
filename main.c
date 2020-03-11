@@ -42,8 +42,8 @@ int main(int argc, char** argv){
 	    scanf("%d",&choice);
 	    switch(choice){
 	    case 1:
-	      list_products(db, userEmail);
-        break;
+        list_products(db, userEmail);
+	      break;
 	    case 2:
         searchSales();
 	      break;
@@ -67,3 +67,4 @@ int main(int argc, char** argv){
   }
   return 0;
 }
+

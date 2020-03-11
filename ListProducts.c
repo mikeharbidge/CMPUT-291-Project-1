@@ -77,7 +77,7 @@ void product_actions(sqlite3 *db, long numberOfReviews, char *reviewer)
                 write_preview(db, pid, numberOfReviews, reviewer);
                 break;
             case 2:
-                list_reviews(db, pid);
+                list_reviews_lp(db, pid);
                 break;
             case 3:
                 list_sales(db, pid);
@@ -197,17 +197,17 @@ void write_preview(sqlite3 *db, char *pid, long numberOfReviews, char *reviewer)
     }
 }
 
-void list_reviews(sqlite3 *db, char *pid)
+void list_reviews_lp(sqlite3 *db, char *pid)
 {
     const char *listReviewsQuery = sqlite3_mprintf("SELECT * \
     FROM previews pr \
     WHERE pr.pid = \"%s\"",
                                                    pid);
     printf("Review ID\tProduct ID\tReviewer\tRating\t\tReview Text\tReview Date\n");
-    sqlite3_exec(db, listReviewsQuery, list_reviews_callback, NULL, NULL); //TODO: Error handling
+    sqlite3_exec(db, listReviewsQuery, list_reviews_lp_callback, NULL, NULL); //TODO: Error handling
 }
 
-static int list_reviews_callback(void *list, int count, char **data, char **columns)
+static int list_reviews_lp_callback(void *list, int count, char **data, char **columns)
 {
     for (int i = 0; i < count; i++)
     {
