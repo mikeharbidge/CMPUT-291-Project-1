@@ -68,15 +68,3 @@ int main(int argc, char** argv){
   return 0;
 }
 
-/*static int callback(void *data, int argc, char **argv, char **aColName)
-{
-    int i;
-    fprintf(stderr, "%s: ", (const char*)data);
-    for(i = 0; i<argc; i++)
-    {
-    printf("%s = %s\n", aColName[i], argv[i] ? argv[i] : "NULL");
-    }
-    printf("\n");
-    return 0;
-}
-*/
