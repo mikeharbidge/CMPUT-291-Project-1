@@ -33,7 +33,7 @@ void Post_Sale(char* userEmail, sqlite3* db){
   scanf("%d",&price);
   //insert sale statement
   sprintf(search, "insert into sales values ('%s', '%s', '%s', datetime('now','+%d days'), '%s', '%s', %d)",sid,userEmail,pid,days,text,cond,price);
-  printf("SQL: %s\n",search);
+  //printf("SQL: %s\n",search);
   int rc = sqlite3_exec(db, search,callback,(void*)data, &zErrMsg);
 
   if( rc != SQLITE_OK )
