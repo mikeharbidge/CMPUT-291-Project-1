@@ -7,17 +7,25 @@ int main(int argc, char** argv){
     //testing for login
     //NEEDS TO ERROR CHECK DB INIT
   sqlite3* db;
-  sqlite3_open(argv[1],&db);
+  int rc = sqlite3_open(argv[1],&db);
+  if(rc)
+    {
+      fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+      return 0;
+    }else
+    {
+      fprintf(stderr, "Opened database successfully\n");
+      
+    }
     int in = 0; //if login succeeded
     int choice;//input for choosing functionality
     in = loginScreen();
+    int loop = 0;
     if (in){
         printf("***LOGIN SUCCEEDED***\n");
-	printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\n");
-  sqlite3* db = 0;
-  openDB("test.db", db);
-  printf("%s", db);
-	while(scanf("%d",&choice)){
+	do{
+	  printf("1. List Products\n2. Search For Sales\n3. Post a Sale\n4. Search for Users\n5. Logout\nInput: ");
+	  scanf("%d",&choice);
 	  switch(choice){
 	  case 1:
 	    printf("chose 1\n");
@@ -38,14 +46,15 @@ int main(int argc, char** argv){
 	    //Search for users
 	  case 5:
 	    printf("chose 5\n");
-	    return 0;//temp
+      loop = 1;
+	    sqlite3_close(db);
 	    break;
 	    //logout and close DB
 	  default:
 	    printf("Error: %d is not an option\n", choice);
 	    break;
 	  }
-	}
+	}while(loop);
     }
     return 0;
     }
