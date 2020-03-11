@@ -5,9 +5,9 @@
 #include "Login.h"
 #include "ListProducts.h"
 #include "SearchUsers.h"
+#include "SearchSales.h"
 
+sqlite3* db;
 
 int main();
-
-extern int openDB(char *filename, sqlite3 *db;);
 static int callback(void *data, int argc, char **argv, char **aColName); //Callback will NOT transfer between files
