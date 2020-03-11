@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "cstdio": "c",
+        "stdbool.h": "c",
+        "sqlite3.h": "c",
+        "listproducts.h": "c",
+        "login.h": "c"
+    }
+}

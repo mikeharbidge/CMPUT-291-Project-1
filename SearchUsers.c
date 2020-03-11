@@ -13,10 +13,13 @@ void Search_Users(){
   char choice;
   char s[50];
 <<<<<<< HEAD
+<<<<<<< HEAD
   char text[500];
   printf("Enter Keywords of User\n");
   int rc = sqlite3_open("test.db", &db);
 =======
+=======
+>>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
   printf("Enter Keyword of User: ");
   int rc;
 >>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
@@ -41,6 +44,7 @@ void Search_Users(){
   printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\nInput:\
  ");
   
+<<<<<<< HEAD
 <<<<<<< HEAD
   do{
     printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\n");
@@ -95,6 +99,22 @@ void Search_Users(){
       list_reviews(userEmail,db);
       break;
       //list all reviews of the user
+=======
+  while(scanf("%c",&choice)){
+    switch(choice){
+    case '1':
+      write_review(userEmail,db);     
+      break;
+      //write review
+    case '2':
+      list_listings(userEmail,db);
+      break;
+      //list all active listings
+    case '3':
+      list_reviews(userEmail,db);
+      break;
+      //list all reviews of the user
+>>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
     case '4':
       printf("Returning...\n");
 >>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
@@ -105,12 +125,15 @@ void Search_Users(){
       return;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
   }while(1);
   sqlite3_close(db);
   return;
 }
 
 =======
+=======
+>>>>>>> 695f0d476a5c40be2213f1fdad93e9dd1ad1858e
     printf("1. Write a review\n2. List all active listings of user\n3. List all reviews of the user\n4. Back\nInput:\
  ");
     char f[20];
