@@ -5,7 +5,7 @@ CC = gcc
 #compiler flags:
 CFLAGS = -std=c99 -Wall -L/usr/lib/sqlite3 
 
-SRCS = main.c Login.c ListProducts.c
+SRCS = main.c Login.c SearchUsers.c
 OBJS = $(patsubst %.c,%.o, $(SRCS)) 	#makes object files from all C files
 HEADERS = $(wildcard *.h)
 

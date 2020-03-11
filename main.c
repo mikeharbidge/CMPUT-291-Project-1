@@ -3,9 +3,11 @@
 //Main also includes utility functions for opening and closing SQL databases
 #include "main.h"
 
-int main(){
+int main(int argc, char** argv){
     //testing for login
     //NEEDS TO ERROR CHECK DB INIT
+  sqlite3* db;
+  sqlite3_open(argv[1],&db);
     int in = 0; //if login succeeded
     int choice;//input for choosing functionality
     in = loginScreen();
@@ -19,7 +21,7 @@ int main(){
 	  switch(choice){
 	  case 1:
 	    printf("chose 1\n");
-      list_products(db, "Admin");
+      list_products(db, userEmail);
 	    break;
 	  case 2:
 	    printf("chose 2\n");
@@ -31,6 +33,7 @@ int main(){
 	    //Post a sale
 	  case 4:
 	    printf("chose 4\n");
+	    // Search_Users(userEmail,db);
 	    break;
 	    //Search for users
 	  case 5:
