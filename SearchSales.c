@@ -4,7 +4,7 @@
 
 int searchSales()
 {
-    char SQL[1000] = "SELECT * FROM sales s, products p WHERE s.pid = p.pid AND s.edate > time(\'now\') AND (";
+    char SQL[1000] = "SELECT s.sid, s.descr  FROM sales s, products p WHERE s.pid = p.pid AND s.edate > time(\'now\') AND (";
 
     int n, i = 0;
 
@@ -70,6 +70,8 @@ int searchSales()
 
     for(i = 0; i < n; i++)
         free(a[i]);
+
+    
 
     return 0;
 }
