@@ -61,7 +61,7 @@ int signIn()
     scanf("%s", userEmail);
 
     printf("Enter Password: ");
-    scanf("%s", userEmail);
+    scanf("%s", userPwd);
 
     printf("info:%s, %s\n", userEmail, userPwd);
 
