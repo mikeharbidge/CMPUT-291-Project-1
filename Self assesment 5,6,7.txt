@@ -1,0 +1,8 @@
+5a. Fail
+5b. Fail
+5c. Partial pass
+6a. Pass
+6b. Partial pass
+6c. Pass
+6d. Pass
+7. Pass
