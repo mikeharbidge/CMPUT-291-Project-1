@@ -23,8 +23,8 @@ Self-test result:
 3c.
 3d.
 
-4a.
-4b.
+4a.partial pass
+4b.pass
 
 5a.
 5b.
