@@ -1,0 +1,38 @@
+Group members
+  1. Name and CCID
+  2. Name and CCID
+  3. Name and CCID
+
+For each section in the marking, test your project and mark it as 'pass', 'partial pass', 'fail'.
+
+Self-test result:
+
+1a. pass
+1b. pass
+1c. pass
+1d. pass
+
+2a. 
+2b. 
+2c. 
+2d. 
+2e. 
+
+3a.
+3b.
+3c.
+3d.
+
+4a.
+4b.
+
+5a.
+5b.
+5c.
+
+6a.
+6b.
+6c.
+6d.
+
+7.
